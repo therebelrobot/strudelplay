@@ -27,6 +27,7 @@ const log = {
 export class StrudelMCPClient {
   private client: Client | null = null;
   private isInitialized = false;
+  private isPlaying = false;
 
   async connect() {
     try {
@@ -120,15 +121,26 @@ export class StrudelMCPClient {
 
       console.log(`${colors.blue}[MCP]${colors.reset} Replace result:`, JSON.stringify(replaceResult, null, 2));
 
-      // Auto-play the pattern after writing
+      // If already playing, use update instead of play
       if (autoPlay) {
-        console.log(`${colors.blue}[MCP]${colors.reset} Calling 'play' tool to start playback`);
-        const playResult = await this.client.callTool({
-          name: 'play',
-          arguments: {},
-        });
-        console.log(`${colors.blue}[MCP]${colors.reset} Play result:`, JSON.stringify(playResult, null, 2));
-        log.success('Pattern updated and playing');
+        if (this.isPlaying) {
+          console.log(`${colors.blue}[MCP]${colors.reset} Calling 'update' tool to apply changes while playing`);
+          const updateResult = await this.client.callTool({
+            name: 'update',
+            arguments: {},
+          });
+          console.log(`${colors.blue}[MCP]${colors.reset} Update result:`, JSON.stringify(updateResult, null, 2));
+          log.success('Pattern updated while playing');
+        } else {
+          console.log(`${colors.blue}[MCP]${colors.reset} Calling 'play' tool to start playback`);
+          const playResult = await this.client.callTool({
+            name: 'play',
+            arguments: {},
+          });
+          console.log(`${colors.blue}[MCP]${colors.reset} Play result:`, JSON.stringify(playResult, null, 2));
+          this.isPlaying = true;
+          log.success('Pattern updated and playing');
+        }
       } else {
         log.success('Pattern updated');
       }
@@ -153,9 +165,28 @@ export class StrudelMCPClient {
         name: 'play',
         arguments: {},
       });
+      this.isPlaying = true;
       log.success('Playback started');
     } catch (error) {
       log.error(`Failed to start playback: ${error}`);
+      throw error;
+    }
+  }
+
+  async update() {
+    if (!this.client) {
+      throw new Error('Client not connected. Call connect() first.');
+    }
+
+    try {
+      log.info('Updating pattern while playing...');
+      await this.client.callTool({
+        name: 'update',
+        arguments: {},
+      });
+      log.success('Pattern updated');
+    } catch (error) {
+      log.error(`Failed to update pattern: ${error}`);
       throw error;
     }
   }
@@ -171,9 +202,29 @@ export class StrudelMCPClient {
         name: 'pause',
         arguments: {},
       });
+      this.isPlaying = false;
       log.success('Playback paused');
     } catch (error) {
       log.error(`Failed to pause playback: ${error}`);
+      throw error;
+    }
+  }
+
+  async stop() {
+    if (!this.client) {
+      throw new Error('Client not connected. Call connect() first.');
+    }
+
+    try {
+      log.info('Stopping playback...');
+      await this.client.callTool({
+        name: 'stop',
+        arguments: {},
+      });
+      this.isPlaying = false;
+      log.success('Playback stopped');
+    } catch (error) {
+      log.error(`Failed to stop playback: ${error}`);
       throw error;
     }
   }
@@ -184,6 +235,7 @@ export class StrudelMCPClient {
       await this.client.close();
       this.client = null;
       this.isInitialized = false;
+      this.isPlaying = false;
       log.success('Connection closed');
     }
   }
