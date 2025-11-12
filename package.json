@@ -5,22 +5,26 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "sampler": "PORT=$(grep PORT .env | cut -d '=' -f2) npx @strudel/sampler",
-    "samples:serve": "SAMPLES_PORT=$(grep SAMPLES_PORT .env | cut -d '=' -f2) SAMPLES_DIR=$(grep SAMPLES_DIR .env | cut -d '=' -f2) serve -l ${SAMPLES_PORT:-8000} -n ${SAMPLES_DIR:-samples} --cors",
+    "sampler": "PORT=$(grep '^PORT=' .env | cut -d '=' -f2) npx @strudel/sampler",
+    "samples:serve": "SAMPLES_PORT=$(grep '^SAMPLES_PORT=' .env | cut -d '=' -f2) SAMPLES_DIR=$(grep '^SAMPLES_DIR=' .env | cut -d '=' -f2) serve -l ${SAMPLES_PORT:-8000} -n ${SAMPLES_DIR:-samples} --cors",
     "dev": "tsx scripts/watcher.ts",
-    "dev:file": "tsx scripts/watcher.ts",
-    "dev:watch": "npm-run-all --parallel sampler dev",
-    "dev:full": "npm-run-all --parallel sampler samples:serve dev",
+    "dev:watch": "npm-run-all --parallel sampler \"dev {@}\" --",
+    "dev:all": "npm-run-all --parallel sampler samples:serve \"dev {@}\" --",
     "init": "tsx scripts/init-strudel.ts",
-    "setup": "npm run setup:submodule && npm run setup:mcp && npm run setup:env",
+    "test:mcp": "tsx scripts/test-mcp.ts",
+    "cleanup": "./scripts/cleanup.sh",
+    "stop": "npm run cleanup",
+    "setup": "npm run setup:submodule && npm run setup:mcp && npm run setup:config && npm run setup:env",
     "setup:submodule": "git submodule update --init --recursive",
     "setup:mcp": "cd mcp-server && npm install && npm run build",
+    "setup:config": "cp mcp-server-config.json mcp-server/config.json",
     "setup:env": "test -f .env || cp .env.example .env",
     "postinstall": "npm run setup:submodule"
   },
   "author": "Aster Haven (therebelrobot) <github@aster.hn>",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.4"
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "glob": "^11.0.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

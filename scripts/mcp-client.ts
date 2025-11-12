@@ -1,6 +1,9 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { spawn } from 'child_process';
+import { config } from 'dotenv';
+
+// Load environment variables
+config();
 
 // ANSI color codes for better terminal output
 const colors = {
@@ -29,10 +32,19 @@ export class StrudelMCPClient {
     try {
       log.info('Connecting to Strudel MCP server...');
 
-      // Create transport with command and args
+      // Filter out undefined env vars for TypeScript
+      const env = Object.fromEntries(
+        Object.entries(process.env).filter(([_, v]) => v !== undefined)
+      ) as Record<string, string>;
+
+      // Debug: log the PLAYWRIGHT_TIMEOUT value
+      console.log(`${colors.blue}[MCP]${colors.reset} PLAYWRIGHT_TIMEOUT=${env.PLAYWRIGHT_TIMEOUT || 'NOT SET'}`);
+
+      // Create transport with command and args, passing through env vars
       const transport = new StdioClientTransport({
         command: process.env.NODE_PATH || 'node',
         args: [process.env.STRUDEL_MCP_PATH || './mcp-server/dist/index.js'],
+        env,  // Pass all environment variables including PLAYWRIGHT_TIMEOUT
       });
 
       // Create and connect client
@@ -74,7 +86,7 @@ export class StrudelMCPClient {
     }
   }
 
-  async writePattern(pattern: string) {
+  async writePattern(pattern: string, autoPlay: boolean = true) {
     if (!this.client) {
       throw new Error('Client not connected. Call connect() first.');
     }
@@ -86,13 +98,46 @@ export class StrudelMCPClient {
 
     try {
       log.pattern('Updating pattern in Strudel...');
-      await this.client.callTool({
-        name: 'write',
-        arguments: { pattern },
+      console.log(`${colors.blue}[MCP]${colors.reset} Replacing pattern with ${pattern.length} characters`);
+
+      // Get current pattern to replace
+      const currentResult = await this.client.callTool({
+        name: 'get_pattern',
+        arguments: {},
       });
-      log.success('Pattern updated');
+
+      const currentPattern = (currentResult.content as any)?.[0]?.text || '';
+      console.log(`${colors.blue}[MCP]${colors.reset} Current pattern length: ${currentPattern.length}`);
+
+      // Use replace instead of write to avoid auto-completion issues
+      const replaceResult = await this.client.callTool({
+        name: 'replace',
+        arguments: {
+          search: currentPattern,
+          replace: pattern
+        },
+      });
+
+      console.log(`${colors.blue}[MCP]${colors.reset} Replace result:`, JSON.stringify(replaceResult, null, 2));
+
+      // Auto-play the pattern after writing
+      if (autoPlay) {
+        console.log(`${colors.blue}[MCP]${colors.reset} Calling 'play' tool to start playback`);
+        const playResult = await this.client.callTool({
+          name: 'play',
+          arguments: {},
+        });
+        console.log(`${colors.blue}[MCP]${colors.reset} Play result:`, JSON.stringify(playResult, null, 2));
+        log.success('Pattern updated and playing');
+      } else {
+        log.success('Pattern updated');
+      }
     } catch (error) {
       log.error(`Failed to update pattern: ${error}`);
+      console.error(`${colors.red}[MCP ERROR]${colors.reset}`, error);
+      if (error instanceof Error && error.stack) {
+        console.error(error.stack);
+      }
       throw error;
     }
   }

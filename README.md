@@ -99,6 +99,9 @@ npm run dev:full
 | `npm run sampler` | Start the Strudel sampler server (port from `.env`) |
 | `npm run samples:serve` | Start custom samples server (port/dir from `.env`) |
 | `npm run init` | Initialize a new Strudel browser session |
+| **Utilities** | |
+| `npm run cleanup` | Kill lingering processes on ports 5555 and 8000 |
+| `npm run stop` | Alias for cleanup |
 | **Setup** | |
 | `npm run setup` | Run all setup steps (submodule, MCP server, env file) |
 | `npm run setup:submodule` | Initialize git submodules |

@@ -1,0 +1,10 @@
+{
+  "headless": false,
+  "strudel_url": "https://strudel.cc/",
+  "patterns_dir": "./patterns",
+  "timeout": 120000,
+  "audio_analysis": {
+    "fft_size": 2048,
+    "smoothing": 0.8
+  }
+}

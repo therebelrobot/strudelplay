@@ -169,6 +169,22 @@ If you have custom audio samples:
 - Verify your Strudel code is valid
 - Try the example files first to confirm the workflow works
 
+### "Address already in use" error
+
+If you see errors about ports 5555 or 8000 being in use:
+
+```bash
+# Clean up lingering processes
+npm run cleanup
+# or
+npm run stop
+
+# Then restart
+npm run dev:watch
+```
+
+This happens when the servers don't shut down properly. The cleanup script kills any lingering processes.
+
 ### Connection errors
 
 - Make sure the MCP server is built:
