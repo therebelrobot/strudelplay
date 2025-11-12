@@ -1,0 +1,34 @@
+{
+  "name": "strudelplay",
+  "version": "1.0.0",
+  "description": "playing with strudel coding",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "sampler": "PORT=$(grep PORT .env | cut -d '=' -f2) npx @strudel/sampler",
+    "samples:serve": "SAMPLES_PORT=$(grep SAMPLES_PORT .env | cut -d '=' -f2) SAMPLES_DIR=$(grep SAMPLES_DIR .env | cut -d '=' -f2) serve -l ${SAMPLES_PORT:-8000} -n ${SAMPLES_DIR:-samples} --cors",
+    "dev": "tsx scripts/watcher.ts",
+    "dev:file": "tsx scripts/watcher.ts",
+    "dev:watch": "npm-run-all --parallel sampler dev",
+    "dev:full": "npm-run-all --parallel sampler samples:serve dev",
+    "init": "tsx scripts/init-strudel.ts",
+    "setup": "npm run setup:submodule && npm run setup:mcp && npm run setup:env",
+    "setup:submodule": "git submodule update --init --recursive",
+    "setup:mcp": "cd mcp-server && npm install && npm run build",
+    "setup:env": "test -f .env || cp .env.example .env",
+    "postinstall": "npm run setup:submodule"
+  },
+  "author": "Aster Haven (therebelrobot) <github@aster.hn>",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "chokidar": "^4.0.3",
+    "dotenv": "^16.4.7",
+    "npm-run-all": "^4.1.5",
+    "serve": "^14.2.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,33 @@
+// Techno Pattern Example (130 BPM)
+// This demonstrates a .str file (also watched!)
+
+setcpm(130/4)
+samples('http://localhost:5555')
+
+stack(
+  // Kick pattern - four-on-the-floor
+  sound("bd*4"),
+  
+  // Off-beat hi-hats
+  sound("~ hh ~ hh").fast(2),
+  
+  // Clap on 2 and 4
+  sound("~ cp ~ cp"),
+  
+  // Percussive elements
+  sound("~ ~ mt ~ ~ ~ lt ~").fast(2),
+  
+  // Bass line
+  note("c2!4 ~ c2!4 ~ c2!4 ~ f2!2 g2!2")
+    .sound("sawtooth")
+    .lpf(perlin.range(200, 800))
+    .resonance(10)
+    .room(0.5)
+)
+.slow(2)
+
+// Try these modifications:
+// - Change tempo: setcpm(140/4)
+// - Add delay: .delay(0.25)
+// - Modify bass note pattern
+// - Add .rev() after sound patterns for reverse

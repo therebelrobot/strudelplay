@@ -1,0 +1,48 @@
+// Example Strudel Pattern - Test the Auto-Update Workflow
+// Save this file to hear changes instantly in the browser!
+
+// Set tempo (90 BPM)
+setcpm(90/4)
+
+// Load samples from the Strudel sampler
+samples('http://localhost:5555')
+
+// Basic drum pattern
+stack(
+  // Kick drum on every beat
+  sound("bd bd bd bd"),
+  
+  // Snare on 2 and 4
+  sound("~ sd ~ sd"),
+  
+  // Hi-hats
+  sound("hh hh hh hh").fast(2),
+  
+  // Occasional ride
+  sound("~ ~ ~ cy").slow(2)
+)
+
+// Try uncommenting these variations below to test auto-update:
+
+// Variation 1: Add some bass
+// .stack(
+//   note("c2 c2 g2 f2").sound("sawtooth").lpf(800)
+// )
+
+// Variation 2: Add melody
+// .stack(
+//   note("c4 e4 g4 e4 c4 e4 g4 c5")
+//     .sound("piano")
+//     .slow(2)
+// )
+
+// Variation 3: Effects
+// .room(0.5)
+// .delay(0.25)
+
+// Tips for testing:
+// 1. Save this file and hear it play
+// 2. Uncomment variations one by one and save
+// 3. Each save updates the browser instantly
+// 4. Try changing the tempo (setcpm value)
+// 5. Modify the drum pattern and save
