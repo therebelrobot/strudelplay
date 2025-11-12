@@ -61,14 +61,23 @@ npm run dev
 # Run sampler + file watcher (recommended)
 npm run dev:watch
 
-# Run sampler + custom samples + file watcher
-npm run dev:full
+# Run sampler + custom samples server + JSON generator (watch mode) + file watcher
+npm run dev:all
 
 # Just the sampler server
 npm run sampler
 
 # Just the custom samples server
 npm run samples:serve
+
+# Generate samples JSON file for GitHub hosting
+npm run samples:generate
+
+# Generate samples JSON file for local development
+npm run samples:generate:local
+
+# Generate samples JSON file in watch mode (uses local server)
+npm run samples:generate:watch
 
 # Initialize Strudel browser
 npm run init
@@ -242,6 +251,49 @@ Then restart:
 ```bash
 npm run dev:all
 ```
+
+### Configure Samples JSON Generation
+
+The `strudel-json-generator` creates a JSON file mapping your samples for use in Strudel.
+
+#### For Local Development
+
+During development, the generator uses your local samples server URL. Configure in `.env`:
+
+```env
+SAMPLES_DIR=samples
+SAMPLES_PORT=8000
+```
+
+The watch mode (included in `dev:all`) automatically updates the JSON when samples change:
+```bash
+npm run samples:generate:watch
+```
+
+Or generate once:
+```bash
+npm run samples:generate:local
+```
+
+#### For GitHub Hosting (Production)
+
+For hosting samples on GitHub Pages or raw URLs, configure in `.env`:
+
+```env
+GITHUB_USERNAME=your-username
+GITHUB_REPO=your-repo
+SAMPLES_DIR=samples
+```
+
+Then generate the JSON with GitHub URLs:
+```bash
+npm run samples:generate
+```
+
+The generator will:
+- Scan the `samples/` directory for audio files
+- Create a JSON file mapping filenames to the appropriate URLs
+- Works with both local development and GitHub hosting
 
 ### Different MCP Server
 

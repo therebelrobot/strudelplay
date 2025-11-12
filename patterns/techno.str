@@ -1,7 +1,7 @@
 // Techno Pattern Example (130 BPM)
 // This demonstrates a .str file (also watched!)
 
-setcpm(130/4)
+setcpm(120/4)
 samples('http://localhost:5555')
 
 stack(
@@ -12,19 +12,18 @@ stack(
   sound("~ hh ~ hh").fast(2),
   
   // Clap on 2 and 4
-  sound("~ cp ~ cp"),
+  sound("~ cp ~ cp").slow(2),
   
   // Percussive elements
-  sound("~ ~ mt ~ ~ ~ lt ~").fast(2),
+  sound("~ ~ mt ~ ~ ~ lt ~"),
   
   // Bass line
-  note("c2!4 ~ c2!4 ~ c2!4 ~ f2!2 g2!2")
+  note("c2!3 ~ c2!3 ~ c2!3 ~ f2!2 g2!1 ~")
     .sound("sawtooth")
     .lpf(perlin.range(200, 800))
     .resonance(10)
     .room(0.5)
 )
-.slow(2)
 
 // Try these modifications:
 // - Change tempo: setcpm(140/4)
