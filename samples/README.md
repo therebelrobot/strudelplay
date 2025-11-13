@@ -55,6 +55,64 @@ samples('http://localhost:5555', 'http://localhost:8000')
 sound("bd casio/c4 drums/kick")
 ```
 
+## Sample JSON Generation
+
+The `strudel-json-generator` creates a JSON file that maps your sample filenames to URLs, making it easier to use your samples in Strudel patterns.
+
+### Local Development
+
+During development, generate JSON that points to your local samples server:
+
+```bash
+# One-time generation
+npm run samples:generate:local
+
+# Watch mode (auto-updates when samples change) - included in dev:all
+npm run samples:generate:watch
+```
+
+This creates a `strudel.json` file in your `SAMPLES_DIR` with the correct local server URLs.
+
+Then in your Strudel patterns:
+```javascript
+// Load from the local samples server
+samples('http://localhost:8000/strudel.json')
+sound("kick snare hat")
+```
+
+The JSON file is served directly from your samples directory, making it easy to reference in your patterns.
+
+The watch mode (included in `npm run dev:all`) automatically regenerates the JSON when you add, remove, or modify samples - perfect for rapid iteration.
+
+### GitHub Hosting (Production)
+
+To host your samples on GitHub for remote access:
+
+1. After `npm run setup`, edit `.env` and configure your GitHub details:
+   ```env
+   GITHUB_USERNAME=your-username
+   GITHUB_REPO=your-repo
+   SAMPLES_DIR=samples
+   ```
+
+2. Generate the samples JSON with GitHub URLs:
+   ```bash
+   npm run samples:generate
+   ```
+
+3. Push your samples and JSON to GitHub:
+   ```bash
+   git add samples/
+   git commit -m "Add custom samples"
+   git push
+   ```
+
+4. Use in Strudel patterns:
+   ```javascript
+   samples('https://raw.githubusercontent.com/your-username/your-repo/main/samples/samples.json')
+   sound("kick snare hat")
+   ```
+
 ## Configuration
 
 Edit `.env` to change:
@@ -62,6 +120,8 @@ Edit `.env` to change:
 ```env
 SAMPLES_PORT=8000      # Port for the samples server
 SAMPLES_DIR=samples    # Directory to serve (relative to project root)
+GITHUB_USERNAME=your-username  # For GitHub hosting
+GITHUB_REPO=your-repo          # For GitHub hosting
 ```
 
 ## Tips
