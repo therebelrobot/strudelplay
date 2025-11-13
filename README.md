@@ -2,6 +2,10 @@
 
 A repository for experimenting with [Strudel](https://strudel.cc/) live coding music patterns, with an automated development workflow powered by the Strudel MCP server.
 
+## Demo
+
+![Demo](.github/demo.gif)
+
 ## Features
 
 - 🎵 **Auto-reload**: Automatically updates Strudel when you save `.strudel` or `.str` files
