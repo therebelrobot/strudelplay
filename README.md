@@ -10,6 +10,15 @@ A repository for experimenting with [Strudel](https://strudel.cc/) live coding m
 - 🚀 **MCP Integration**: Leverages the Strudel MCP server for seamless browser control
 - 📝 **TypeScript workflow**: Type-safe development scripts with tsx
 
+## ⚠️ Current Status
+
+This project currently depends on two upstream pull requests of the submodule that are open and under review:
+
+- [PR #8: Fix: Replace keyboard.type() with insertText() to prevent auto-pairing corruption](https://github.com/williamzujkowski/strudel-mcp-server/pull/8)
+- [PR #9: Add Update Button Support for Live Pattern Updates](https://github.com/williamzujkowski/strudel-mcp-server/pull/9)
+
+**Workaround**: While these PRs are in review, this project uses a fork of the MCP server submodule with the changes already implemented. The forked is available in the `main-fixed` branch of this repo. If you want a working version of this application prior to the merge of the two listed PRs, you'll have to copy/use `main-fixed` for now.
+
 ## Prerequisites
 
 - Node.js (v18 or higher recommended)
