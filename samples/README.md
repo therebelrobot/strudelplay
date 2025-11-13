@@ -71,13 +71,16 @@ npm run samples:generate:local
 npm run samples:generate:watch
 ```
 
-This creates a JSON file with URLs like `http://localhost:8000/drums/kick.wav`.
+This creates a `strudel.json` file in your `SAMPLES_DIR` with the correct local server URLs.
 
 Then in your Strudel patterns:
 ```javascript
-samples('http://localhost:8000/samples.json')
-sound("kick snare hat drums/snare")
+// Load from the local samples server
+samples('http://localhost:8000/strudel.json')
+sound("kick snare hat")
 ```
+
+The JSON file is served directly from your samples directory, making it easy to reference in your patterns.
 
 The watch mode (included in `npm run dev:all`) automatically regenerates the JSON when you add, remove, or modify samples - perfect for rapid iteration.
 
